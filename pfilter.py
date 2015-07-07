@@ -12,7 +12,7 @@ class pfilter():
         self.xsize = xsize
         self.ysize = ysize
         self.nparts = nparts
-        self.ycond = np.vectorize(ycond)
+        self.ycond = ycond
         self.xupdate = xupdate
         self.dt = dt
 
@@ -65,7 +65,7 @@ class pfilter():
         
         self.xupdate(self.X, dt)
         #add weights to a matrix to use ycond over each row
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         self.w = self.w*np.apply_along_axis(lambda x: self.ycond(y, x, dt), 1, self.X)
         
     def compute(self, f): 
@@ -101,14 +101,14 @@ def normCond(y, x, dt):
 
 # Updates have a time factor T where it is back to prior.
 
-def updateNorm(X, dt, ysize, sigmaalpha, sigmasigma):
+def diffuse(X, dt, ysize, sigmaalpha, sigmasigma):
 # Thoughts about wishart:
 # Measuring covariance sample adds df for each observation, and emperical Cov. 
 # The mean is Psi/(dof - p -1), p = dimensions.
 # So measuring gives the mean of all the observations.
 
 # X.shape[0] = nparts
-
+    import pdb;pdb.set_trace()
     X[:, 0:ysize] += norm(ysize, sigmaalpha, X.shape[0])*np.sqrt(dt)
     traceX = np.trace(X[:, ysize:])
     X[:, ysize:] = (X[:, ysize:] + invWishart(ysize, sigmasigma*np.sqrt(dt), X.shape[0]) )*traceX/(traceX + sigmasigma**2*dt*ysize )

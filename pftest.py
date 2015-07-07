@@ -17,13 +17,14 @@ def xupdate(X, dt) :
 
 n = 15
 
-xupdate2 = lambda X, dt: pfilter.updateNorm(X, dt, 1, 1, 1)
+xupdate2 = lambda X, dt: pfilter.diffus:(X, dt, 1, 1, 1)
 
-pf = pfilter.pfilter(2, 1, n, xupdate2, pfilter.normCond, 0.01)
-pf.setPrior(pfilter.norm(2, 1, n))
+pf = pfilter.pfilter(2, 1, n, xupdate2, pfilter.normCond, 1)
+prior = np.concatenate((pfilter.norm(1, 1, n), np.abs(pfilter.norm(1, 1, n))), axis=1)
+pf.setPrior(prior)
 
 print(pf.mean())
 
-pf2 = pfilter.pfilter(2,1,n,xupdate,ycond,0.01)
+pf2 = pfilter.pfilter(2,1,n,xupdate,ycond,1)
 pf2.setPrior(np.random.randn(n,2)) 
 
